@@ -1,0 +1,233 @@
+{
+	"pages": [{
+		"path": "pages/index/index",
+		"style": {
+			"navigationBarTitleText": "uni-app",
+			"navigationStyle": "custom"
+		}
+	}, {
+		"path": "pages/calendar/calendar",
+		"style": {
+			"navigationBarTitleText": "",
+			"enablePullDownRefresh": false,
+			"navigationStyle": "custom"
+		}
+
+	}, {
+		"path": "pages/my/my",
+		"style": {
+			"navigationBarTitleText": " ",
+			"enablePullDownRefresh": false
+		}
+
+	}, {
+		"path": "pages/notice-detail/notice-detail",
+		"style": {
+			"navigationBarTitleText": "公告详情",
+			"enablePullDownRefresh": false,
+			"navigationBarBackgroundColor": "#ffffff"
+		}
+
+	}],
+	"globalStyle": {
+		"navigationBarTextStyle": "black",
+		"navigationBarTitleText": "uni-app",
+		"navigationBarBackgroundColor": "#F8F8F8",
+		"backgroundColor": "#F8F8F8",
+		"app-plus": {
+			"background": "#efeff4"
+		}
+	},
+	"tabBar": {
+		"selectedColor": "#000000",
+		"list": [{
+			"pagePath": "pages/index/index",
+			"text": "首页",
+			"iconPath": "static/tabbar-icons/index.png",
+			"selectedIconPath": "static/tabbar-icons/index_select.png"
+		}, {
+			"pagePath": "pages/calendar/calendar",
+			"text": "日历",
+			"iconPath": "static/tabbar-icons/calendar.png",
+			"selectedIconPath": "static/tabbar-icons/calendar_select.png"
+		}, {
+			"pagePath": "pages/my/my",
+			"text": "我的",
+			"iconPath": "static/tabbar-icons/my.png",
+			"selectedIconPath": "static/tabbar-icons/my_select.png"
+		}]
+	},
+	"subPackages": [{
+		"root": "page_login",
+		"pages": [{
+			"path": "login/login",
+			"style": {
+				"navigationBarTitleText": "登录",
+				"enablePullDownRefresh": false,
+				"navigationStyle": "custom"
+			}
+		}]
+	}, {
+		"root": "page_task",
+		"pages": [{
+			"path": "index/index",
+			"style": {
+				"navigationBarTitleText": "任务",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "my-task/my-task",
+			"style": {
+				"navigationBarTitleText": "我的任务",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "task_details/task_details",
+			"style": {
+				"navigationBarTitleText": "任务详情",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "my-create/my-create",
+			"style": {
+				"navigationBarTitleText": "我创建的",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "copy/copy",
+			"style": {
+				"navigationBarTitleText": "抄送我的",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}]
+	}, {
+		"root": "page_examine",
+		"pages": [{
+			"path": "index/index",
+			"style": {
+				"navigationBarTitleText": "审批",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "my-examine/my-examine",
+			"style": {
+				"navigationBarTitleText": "我审批的",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "examine-details/examine-details",
+			"style": {
+				"navigationBarTitleText": "审批详情",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "my-create/my-create",
+			"style": {
+				"navigationBarTitleText": "我发起的",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "mycreate-details/mycreate-details",
+			"style": {
+				"navigationBarTitleText": "审批详情",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "copy/copy",
+			"style": {
+				"navigationBarTitleText": "抄送我的",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}]
+	}, {
+		"root": "page_manage",
+		"pages": [{
+			"path": "index/index",
+			"style": {
+				"navigationBarTitleText": "管理",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "examine-process/examine-process",
+			"style": {
+				"navigationBarTitleText": "设置审批流程",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "found-notice/found-notice",
+			"style": {
+				"navigationBarTitleText": "设置公告",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "addAdministrators/addAdministrators",
+			"style": {
+				"navigationBarTitleText": "设置子管理员",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "addUser/addUser",
+			"style": {
+				"navigationBarTitleText": "添加通讯录成员",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}]
+	}, {
+		"root": "page_found",
+		"pages": [{
+			"path": "index/index",
+			"style": {
+				"navigationBarTitleText": "新建",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "create-examine/create-examine",
+			"style": {
+				"navigationBarTitleText": "新建审批",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}, {
+			"path": "create-task/create-task",
+			"style": {
+				"navigationBarTitleText": "新建任务",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+		}, {
+			"path": "select-template/select-template",
+			"style": {
+				"navigationBarTitleText": "选择模板",
+				"enablePullDownRefresh": false,
+				"navigationBarBackgroundColor": "#ffffff"
+			}
+
+		}]
+	}]
+}
