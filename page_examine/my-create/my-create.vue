@@ -58,7 +58,6 @@
 				pageNum: 1,
 				pageSize: 1000
 			}).then((res) => {
-				console.log(res);
 				this.examineList = res.rows
 
 				this.temp = this.examineList
@@ -68,8 +67,8 @@
 			gotoDetail(item) {
 				uni.navigateTo({
 					url: '/page_examine/mycreate-details/mycreate-details?taskId=' + item.taskId + '&procInsId=' +
-						item.procInsId + '&deployId' + item.deployId + '&title=' + item.procDefName +
-						'&createTime=' + item.createTime + '&finishTime=' + item.finishTime + '&procInsId' + item
+						item.procInsId + '&deployId=' + item.deployId + '&title=' + item.procDefName +
+						'&createTime=' + item.createTime + '&finishTime=' + item.finishTime + '&procInsId=' + item
 						.procInsId
 				})
 			},
@@ -94,11 +93,12 @@
 		height: 500rpx;
 		position: absolute;
 		left: 125rpx;
+		margin-top: 157rpx;
 	}
 
 	.text-no {
 		position: absolute;
-		top: 520rpx;
+		top: 660rpx;
 		left: 313rpx;
 		font-size: 28rpx;
 		color: rgba(166, 166, 166, 1);
@@ -174,7 +174,7 @@
 	}
 
 	.list {
-		margin-top: 22rpx;
+		margin-top: 14rpx;
 	}
 
 	.group_2 {

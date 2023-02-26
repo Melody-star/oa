@@ -36,7 +36,7 @@
 					</view>
 					<view class="flex-row justify-between group_6">
 						<view class="flex-row space-x-8">
-							<text class="font_5">执行人：{{item.taskUserName}}</text>
+							<text class="font_10">执行人：{{item.taskUserName}}</text>
 						</view>
 						<text class="font_6" v-if="item.taskDegreeOfCompletion === 1">已完成</text>
 						<text class="font_6" v-if="item.taskDegreeOfCompletion === 0">未完成</text>
@@ -339,6 +339,18 @@
 		font-family: SourceHanSansCN;
 		line-height: 22.5rpx;
 		color: #000000;
+	}
+
+	.font_10 {
+		font-size: 28rpx;
+		font-family: SourceHanSansCN;
+		line-height: 22.5rpx;
+		color: #000000;
+
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		width: 501rpx;
 	}
 
 	.font_6 {

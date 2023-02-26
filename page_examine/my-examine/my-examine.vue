@@ -66,40 +66,21 @@
 				}
 			},
 			gotoDetail(item) {
+				console.log("item.deployId:" + item.deployId);
 				uni.navigateTo({
 					url: '/page_examine/examine-details/examine-details?taskId=' + item.taskId + '&procInsId=' +
-						item.procInsId + '&deployId' + item.deployId + '&title=' + item.procDefName +
+						item.procInsId + '&deployId=' + item.deployId + '&title=' + item.procDefName +
 						'&createTime=' + item.createTime + '&state=' + item.state
 				})
 			}
 		},
 		onLoad() {
-			// getMyExamineListt({
-			// 	pageNum: 1,
-			// 	pageSize: 1000
-			// }).then((res) => {
-			// 	console.log(res);
-
-			// 	this.myCreateExamineList = res.rows
-			// 	this.myCreateExamineList.map(el => el.state = "未审批")
-			// })
-
-			// getMyExamineList({
-			// 	pageNum: 1,
-			// 	pageSize: 1000
-			// }).then((res) => {
-			// 	let temp = res.rows
-			// 	temp.map(el => el.state = "已审批")
-			// 	this.myCreateExamineList = [...this.myCreateExamineList, ...temp];
-
-			// 	this.temp = this.myCreateExamineList
-			// })
-
 			getMyExamineListt({
 				pageNum: 1,
 				pageSize: 1000
 			}).then((res) => {
 				console.log(res);
+
 				this.myCreateExamineList = res.rows
 				this.myCreateExamineList.map(el => el.state = "未审批")
 
@@ -109,7 +90,6 @@
 				})
 
 			}).then((res) => {
-				console.log(res);
 				let temp = res.rows
 				temp.map(el => el.state = "已审批")
 				this.myCreateExamineList = [...this.myCreateExamineList, ...temp];
@@ -125,11 +105,12 @@
 		height: 500rpx;
 		position: absolute;
 		left: 125rpx;
+		margin-top: 157rpx;
 	}
 
 	.text-no {
 		position: absolute;
-		top: 520rpx;
+		top: 660rpx;
 		left: 313rpx;
 		font-size: 28rpx;
 		color: rgba(166, 166, 166, 1);
@@ -193,7 +174,7 @@
 	}
 
 	.list {
-		margin-top: 22rpx;
+		margin-top: 14rpx;
 	}
 
 	.group_2 {

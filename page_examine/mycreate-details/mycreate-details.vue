@@ -11,35 +11,22 @@
 				<text class="font_4 text_6" v-if="data.finishTime == 'null'">待审批</text>
 				<text class="font_4 text_6" v-else>已完成</text>
 			</view>
-			<view class="flex-row justify-between section_6">
-				<text class="font_5 text_7">内容</text>
-				<text class="font_6 text_8">
-					使用scale适配大屏。实现数据大屏在任何分辨率的电脑上均可安然运作。无需特定编写rem单位，也不需要考虑单位使用失误导致适配不完全。您即使全部用position去定位在其他屏幕上都不会乱。
-				</text>
+			<view class="flex-row justify-between section_6" v-for="(item,i) in processFormList" :key="i">
+				<text class="font_5">{{item.label}}</text>
+				<text class="font_6 text_8">{{item.defaultValue}}</text>
 			</view>
 			<view class="flex-col section_7 space-y-26">
 				<view class="flex-row group_7 space-x-90">
-					<text class="font_5 text_13">备注</text>
-					<text class="font_6 text_14">此次请假为担当系统市场调研，望领导批准</text>
+					<text class="font_5 text_13">开始时间</text>
+					<text class="font_6 text_14">{{data.createTime}}</text>
+				</view>
+				<view class="flex-row group_7 space-x-90" v-if="data.finishTime != null">
+					<text class="font_5 text_13">结束时间</text>
+					<text class="font_6 text_14">{{data.finishTime}}</text>
 				</view>
 			</view>
 			<view class="flex-col section_8 space-y-18">
-				<view class="flex-row justify-between" :key="i" v-for="(item,i) in node">
-					<view class="flex-row">
-						<view class="flex-col group_10">
-							<view class="section_9"></view>
-							<view class="section_10"></view>
-						</view>
-						<view class="flex-col items-start group_11">
-							<text class="font_2 text_15">{{item.assigneeName}}</text>
-							<text class="font_8 text_16">{{item.createTime}}</text>
-						</view>
-					</view>
-					<view class="flex-col group_12 space-y-88">
-						<text class="font_4 text_20">{{item.taskName}}</text>
-					</view>
-				</view>
-				<view class="box"></view>
+				<uni-steps :options="node" direction="column" :active="active"></uni-steps>
 			</view>
 		</view>
 		<view class="flex-col items-center section_11" v-if="data.finishTime == 'null' && data.copy == '1'">
@@ -64,7 +51,9 @@
 		data() {
 			return {
 				data: {},
-				node: []
+				node: [],
+				processFormList: [],
+				active: 0
 			}
 		},
 		methods: {
@@ -80,14 +69,40 @@
 			}
 		},
 		onLoad(option) {
+			let that = this
+
 			this.data = option
 			getExamineDetail({
 				procInsId: option.procInsId,
 				deployId: option.deployId,
 				taskId: option.taskId
 			}).then((res) => {
-				this.node = res.data.historyTaskList
-				console.log(res);
+				/**
+				 * 提取流程信息
+				 */
+				res.data.historyTaskList.forEach(function(item, index, array) {
+					let obj = {}
+					obj["title"] = item.assigneeName;
+					obj["desc"] = item.createTime;
+					that.node.push(obj);
+
+					if (item.finishTime === null) {
+						that.active = index - 1;
+					} else {
+						that.active = res.data.historyTaskList.length - 1;
+					}
+				})
+
+				/**
+				 * 提取表单和内容信息
+				 */
+				let arr = res.data.processFormList
+				arr.forEach(function(item, index, array) {
+					let obj = {}
+					obj["defaultValue"] = item.fields[0].__config__.defaultValue;
+					obj["label"] = item.fields[0].__config__.label;
+					that.processFormList.push(obj);
+				})
 			})
 		}
 	}
@@ -184,21 +199,15 @@
 
 	.section_6 {
 		margin-top: 18rpx;
-		padding: 36rpx 39rpx 57rpx;
+		padding: 36rpx 39rpx 36rpx;
 		background-color: #ffffff;
 		overflow: hidden;
-		height: 363rpx;
 	}
 
 	.font_5 {
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
-		line-height: 29.5rpx;
 		color: #808080;
-	}
-
-	.text_7 {
-		margin-top: 3rpx;
 	}
 
 	.font_6 {
@@ -214,7 +223,7 @@
 
 	.section_7 {
 		margin-top: 23rpx;
-		padding: 38rpx 36rpx 36rpx;
+		padding: 29rpx 36rpx 36rpx;
 		background-color: #ffffff;
 		overflow: hidden;
 	}
@@ -222,7 +231,7 @@
 	.space-y-26>view:not(:first-child),
 	.space-y-26>text:not(:first-child),
 	.space-y-26>image:not(:first-child) {
-		margin-top: 26rpx;
+		margin-top: 15rpx;
 	}
 
 	.font_7 {
@@ -247,11 +256,10 @@
 	.space-x-90>view:not(:first-child),
 	.space-x-90>text:not(:first-child),
 	.space-x-90>image:not(:first-child) {
-		margin-left: 90rpx;
+		margin-left: 26rpx;
 	}
 
 	.text_13 {
-		margin-top: 3rpx;
 		flex-shrink: 0;
 	}
 
@@ -261,7 +269,7 @@
 
 	.section_8 {
 		margin-top: 22rpx;
-		padding: 42rpx 40rpx 42rpx 71rpx;
+		padding: 30rpx 40rpx;
 		background-color: #ffffff;
 		overflow: hidden;
 		position: relative;

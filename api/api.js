@@ -200,8 +200,8 @@ export const getCopyTesk = function(data) {
 
 export const urgTesk = function(data) {
 	return request({
-		url: "/system/task/urgTesk/" + data,
-		method: "GET",
+		url: "/system/task/urgeTask/task/" + data,
+		method: "POST",
 	})
 }
 
@@ -272,5 +272,21 @@ export const deteleTask = function(data) {
 	return request({
 		url: "/system/task/" + data,
 		method: "DELETE",
+	})
+}
+
+export const addFeedback = function(data) {
+	return request({
+		url: "/system/taskFeedback",
+		method: "POST",
+		data: data
+	})
+}
+
+export const getFeedbackList = function(data) {
+	return request({
+		url: "/system/taskFeedback/list",
+		method: "GET",
+		data: data
 	})
 }

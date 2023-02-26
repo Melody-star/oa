@@ -7,8 +7,8 @@
 						<view class="flex-row space-x-12">
 							<image src="../../static/jinji.png" class="state-img"
 								v-if="taskList.taskUrgentDegree === 1"></image>
-							<image src="http://img.zlpo.xyz/youxian.png" class="state-img"
-								v-if="taskList.taskUrgentDegree === 2"></image>
+							<image src="/static/youxian.png" class="state-img" v-if="taskList.taskUrgentDegree === 2">
+							</image>
 							<image src="../../static/jinji.png" class="state-img"
 								v-if="taskList.taskUrgentDegree === 3"></image>
 
@@ -31,8 +31,8 @@
 				<view class="flex-col space-y-26 section_6">
 					<view class="flex-row space-x-60">
 						<text class="font_5">执行人</text>
-						<view class="flex-row space-x-22">
-							<text class="font_1">{{taskList.taskUserName}}</text>
+						<view class="flex-row">
+							<text class="font_9">{{taskList.taskUserName}}</text>
 						</view>
 					</view>
 					<view class="flex-row">
@@ -48,15 +48,31 @@
 						<text class="font_4 text_11">{{taskList.remarks}}</text>
 					</view>
 				</view>
-				<view class="flex-row justify-between section_7" v-if="taskList.isDistribute != 0">
+
+				<view class="flex-row justify-between section_7">
 					<text class="font_5 text_13">反馈</text>
 
-					<view class="text-wrapper_2" v-if="temp == 0">
-						<uni-easyinput :styles="styles" maxlength="-1" type="textarea" v-model="value"
+					<view class="text-wrapper_2"
+						v-if="temp == 0&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&&isFeedback == false">
+						<uni-easyinput :styles="styles" focus maxlength="-1" type="textarea" v-model="feedbackValue"
 							:clearable="false" :inputBorder="false"></uni-easyinput>
 					</view>
 
-					<view class="text-wrapper_2" v-if="temp == 1">{{taskSummary}}</view>
+
+					<view class="feedback-detail" v-if="temp == 1&&taskList.isDistribute === 1">
+						<view v-for="(item,i) in feedbackList" :key="i" class="feedback-detail-box">
+							<text class="feedback-detail-box-person">{{item.feedbackPerson}}</text>
+							<text class="feedback-detail-box-content">{{item.feedbackContent}}</text>
+						</view>
+					</view>
+
+					<view class="text-wrapper_2"
+						v-if="temp == 0&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&&isFeedback">
+						<uni-easyinput disabled :styles="styles" type="textarea" :clearable="false"
+							:inputBorder="false">
+						</uni-easyinput>
+					</view>
+
 				</view>
 			</view>
 
@@ -66,8 +82,15 @@
 			</view> -->
 
 			<view class="flex-col items-center section_8"
-				v-if="temp == 0&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1">
-				<view class="flex-col items-center button" @click="complete()"><text class="font_2 text_15">完成</text>
+				v-if="temp == 0&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&& isFeedback == false">
+				<view class="flex-col items-center button" @click="feedback()"><text class="font_2 text_15">提交反馈</text>
+				</view>
+			</view>
+
+			<view class="flex-col items-center section_8"
+				v-if="temp == 0&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&&isFeedback">
+				<view class="flex-col items-center button" style="background: rgba(247, 182, 112, 0.5);"><text
+						class="font_2 text_15">已反馈</text>
 				</view>
 			</view>
 
@@ -76,16 +99,19 @@
 				</view>
 			</view>
 
-			<view class="flex-col items-center section_8"
-				v-if="temp == 1&&taskList.taskDegreeOfCompletion===0&&taskList.isUrge==0&&taskList.isDistribute === 1">
-				<view class="flex-col items-center button" @click="urge"><text class="font_2 text_15">催办</text></view>
+			<view class="flex-row items-center section_8"
+				v-if="temp == 1&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&&taskList.isUrge==0">
+				<view class="but-complete" @click="complete()"><text class="font_2 text_15">完成</text>
+				</view>
+				<view class="but-urge" @click="urge()"><text class="font_2 text_15">催办</text>
+				</view>
 			</view>
 
 			<view class="flex-col items-center section_8"
-				v-if="temp == 1&&taskList.taskDegreeOfCompletion===0&&taskList.isUrge==1&&taskList.isDistribute === 1">
-				<view class="flex-col items-center button"><text class="font_2 text_15">已催办</text></view>
+				v-if="temp == 1&&taskList.taskDegreeOfCompletion === 0&&taskList.isDistribute === 1&&taskList.isUrge==1">
+				<view class="flex-col items-center button" @click="feedback()"><text class="font_2 text_15">完成</text>
+				</view>
 			</view>
-
 
 		</view>
 	</view>
@@ -100,7 +126,9 @@
 		sendTemplate,
 		getAccessToken,
 		getAllUser,
-		deteleTask
+		deteleTask,
+		addFeedback,
+		getFeedbackList
 	} from '@/api/api.js'
 
 	import {
@@ -111,7 +139,7 @@
 	export default {
 		data() {
 			return {
-				value: "",
+				feedbackValue: "",
 				styles: {
 					backgroundColor: '#e5e5e580',
 				},
@@ -121,21 +149,38 @@
 				temp: 0,
 				accesstoken: "",
 				taskRecipientId: [],
-				taskSummary: "",
-				receiveOpenid: []
+				receiveOpenid: [],
+				feedbackList: [],
+				isFeedback: false,
 			}
 		},
 		onLoad(option) {
+			let that = this
 			this.temp = option.temp
 			const data = option.taskId
 			getTaskDetail(data).then((res) => {
+				console.log("任务详情");
 				console.log(res);
 				this.taskList = res.data
+
 				this.taskRecipientId = this.taskList.taskRecipientId.split(',')
-
 				this.receiveOpenid = this.taskList.copyUserOpenId.split(',')
+			})
 
-				this.taskSummary = JSON.parse(this.taskList.taskSummary).taskSummary
+			getFeedbackList({
+				taskIds: option.taskId
+			}).then(res => {
+				console.log(res);
+				this.feedbackList = res.rows
+
+				if (typeof(this.feedbackList.find(item => item.feedbackPerson == counter.userName)) ==
+					"undefined") {
+					//没有反馈
+					that.isFeedback = false
+				} else {
+					//已经反馈
+					that.isFeedback = true
+				}
 			})
 		},
 		methods: {
@@ -143,7 +188,7 @@
 				let that = this
 
 				completeTask(this.taskList.taskId, {
-					taskSummary: this.value
+					taskId: that.taskList.taskId
 				}).then((res) => {
 					uni.showToast({
 						title: res.msg,
@@ -156,17 +201,6 @@
 								this.accesstoken = res.data.AccessToken
 
 								let time = new Date()
-
-								// 发送订阅消息
-								// sendTemplate(that.accesstoken, that.taskList.openId,
-								// 	"SNJeNM9cnKBLgp5tqS805wEfvspqpG3aet5rezIuhOM", {
-								// 		thing1: that.taskList.taskName,
-								// 		thing2: that.taskList.taskContent,
-								// 		name3: counter.userName,
-								// 		date4: time.toLocaleString()
-								// 	}).then((res) => {
-								// 	console.log(res);
-								// })
 
 								uni.request({
 									url: 'https://api.weixin.qq.com/cgi-bin/message/subscribe/send?access_token=' +
@@ -206,6 +240,41 @@
 					}
 				})
 			},
+			feedback() {
+				let that = this
+				addFeedback({
+					taskIds: that.taskList.taskId,
+					feedbackUserId: counter.userId,
+					feedbackContent: that.feedbackValue,
+					feedbackPerson: counter.userName
+				}).then((res) => {
+					if (res.code == 200) {
+						uni.showToast({
+							title: res.msg,
+							duration: 2000,
+							icon: 'success',
+							success: () => {
+								if (that.temp == 0) {
+									uni.redirectTo({
+										url: '/page_task/my-task/my-task'
+									});
+								} else {
+									uni.redirectTo({
+										url: '/page_task//my-create/my-create'
+									});
+								}
+							}
+						});
+					} else {
+						uni.showToast({
+							title: res.msg,
+							duration: 2000,
+							icon: 'error'
+						});
+					}
+
+				})
+			},
 			urge() {
 				let that = this
 
@@ -224,9 +293,13 @@
 					}
 
 					urgTesk(this.taskList.taskId).then((res) => {
-						console.log(res);
 
 						if (res.code == 200) {
+							uni.showToast({
+								title: res.msg,
+								icon: 'success',
+							})
+
 							getAccessToken().then((res) => {
 								if (res.code == 200) {
 									this.accesstoken = res.data.AccessToken
@@ -265,6 +338,11 @@
 										url: '/page_task/my-task/my-task'
 									});
 								}
+							})
+						} else {
+							uni.showToast({
+								title: res.msg,
+								icon: 'error',
 							})
 						}
 					})
@@ -415,6 +493,53 @@
 		overflow-y: auto;
 	}
 
+	.feedback-detail {
+		width: 520rpx;
+	}
+
+	.feedback-detail-box {
+		width: 100%;
+		background-color: rgba(229, 229, 229, 0.5);
+		border-radius: 10rpx;
+	}
+
+	.feedback-detail-box-person {
+		margin-left: 22rpx;
+		margin-top: 14rpx;
+		font-size: 32rpx;
+		display: inline-block;
+	}
+
+	.feedback-detail-box-content {
+		display: inline-block;
+		font-size: 28rpx;
+		margin-left: 22rpx;
+		margin-top: 13rpx;
+		width: 473rpx;
+		margin-bottom: 28rpx;
+	}
+
+	.but-complete {
+		margin-left: 52rpx;
+		width: 295rpx;
+		height: 71rpx;
+		border-radius: 10rpx;
+		background: rgba(41, 115, 255, 1);
+		line-height: 71rpx;
+		text-align: center;
+	}
+
+	.but-urge {
+		margin-left: 56rpx;
+		width: 295rpx;
+		height: 71rpx;
+		border-radius: 10rpx;
+		background: rgba(247, 182, 112, 1);
+		line-height: 71rpx;
+		text-align: center;
+	}
+
+
 	.space-y-59>view:not(:first-child),
 	.space-y-59>text:not(:first-child),
 	.space-y-59>image:not(:first-child) {
@@ -463,6 +588,13 @@
 		color: #000000;
 	}
 
+	.font_9 {
+		font-size: 32rpx;
+		font-family: SourceHanSansCN;
+		color: #000000;
+		width: 524rpx;
+	}
+
 	.font_2 {
 		font-size: 28rpx;
 		font-family: SourceHanSansCN;
@@ -502,7 +634,6 @@
 	.font_5 {
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
-		line-height: 29.5rpx;
 		color: #808080;
 	}
 
@@ -513,8 +644,13 @@
 	.font_4 {
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
-		line-height: 38rpx;
 		color: #000000;
+	}
+
+	.zhixin {
+		margin-left: 22rpx;
+		width: 300rpx;
+		border: 1px solid red;
 	}
 
 	.text_7 {
@@ -527,7 +663,7 @@
 
 	.section_6 {
 		margin-top: 23rpx;
-		padding: 39rpx 36rpx 34rpx;
+		padding: 29rpx 36rpx;
 		background-color: #ffffff;
 		overflow: hidden;
 	}
@@ -535,7 +671,7 @@
 	.space-y-26>view:not(:first-child),
 	.space-y-26>text:not(:first-child),
 	.space-y-26>image:not(:first-child) {
-		margin-top: 26rpx;
+		margin-top: 12rpx;
 	}
 
 	.space-x-60>view:not(:first-child),
@@ -553,7 +689,6 @@
 	.font_6 {
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
-		line-height: 24.5rpx;
 		color: #000000;
 	}
 
@@ -616,7 +751,7 @@
 
 	.button {
 		padding: 24rpx 0 21rpx;
-		background-color: #F7B670;
+		background-color: #2973FF;
 		border-radius: 10rpx;
 		overflow: hidden;
 		width: 584rpx;

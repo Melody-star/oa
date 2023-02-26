@@ -57,8 +57,9 @@
 					</view>
 				</view>
 				<view class="flex-col">
+
 					<view class="flex-col space-y-22 list-item" :key="i" v-for="(item, i) in noticeList"
-						@click="gotoDetail(item)">
+						@click="gotoDetail(item)" v-if="noticeList.length != 0">
 						<view class="flex-row justify-between">
 							<text class="font_4 text_4">{{item.noticeTitle}}</text>
 							<text class="font_5 text_5">更多 &gt;&gt;</text>
@@ -66,6 +67,12 @@
 						<view class="flex-row space-x-8">
 							<text class="font_6">{{item.createTime}}</text>
 						</view>
+					</view>
+
+					<view v-else>
+						<image class="icon-nothing" src="/static/编组-10.png" mode="widthFix">
+						</image>
+						<view class="text-nothing">暂无公告</view>
 					</view>
 				</view>
 			</view>
@@ -78,8 +85,6 @@
 		useCounterStore
 	} from '@/stores/counter';
 	const counter = useCounterStore();
-
-	// import '@/utils/momen.js'
 
 	import {
 		getUserInfo,
@@ -123,7 +128,6 @@
 					counter.token = res.data
 					//获取用户信息
 					getUserInfo(true).then((res) => {
-						console.log(res);
 						if (res.code == 401) {
 							uni.showToast({
 								title: "登录失效，请重新登录！",
@@ -170,7 +174,6 @@
 											pageNum: 1,
 											pageSize: 1000
 										}).then((res) => {
-											console.log(res);
 											that.myTaskList = res.rows
 												.filter(item => item
 													.taskDegreeOfCompletion ==
@@ -420,6 +423,19 @@
 		margin-bottom: 24rpx;
 		background-color: #e5e5e580;
 		border-radius: 8rpx;
+	}
+
+	.icon-nothing {
+		width: 300rpx;
+		margin-left: 193rpx;
+		margin-top: 160rpx;
+	}
+
+	.text-nothing {
+		font-size: 28rpx;
+		color: #A6A6A6;
+		text-align: center;
+		margin-top: 60rpx;
 	}
 
 	.text_4 {

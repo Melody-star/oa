@@ -3,11 +3,11 @@
 		<text class="text">欢迎来到OA系统</text>
 		<view class="flex-col items-start space-y-44 group">
 			<text class="font_1">手机号</text>
-			<input maxlength=11 class="text_2" placeholder="请输入您的手机号" @blur="setTel" />
+			<input maxlength=11 class="text_2" placeholder="请输入您的手机号" @input="setTel" />
 		</view>
 		<view class="flex-col space-y-57 group_2">
 			<text class="font_1 text_3">密码</text>
-			<input :password="true" maxlength=20 class="text_2" placeholder="请输入密码" @blur="setPassword"
+			<input :password="true" maxlength=20 class="text_2" placeholder="请输入密码" @input="setPassword"
 				placeholder-style="font-size: 28rpx;" />
 		</view>
 		<button class="flex-col items-center button font_1" :style="{background: bntColor}" @click="Login()">登录</button>
@@ -35,14 +35,17 @@
 			}
 		},
 		methods: {
+			//设置手机号
 			setTel: function(event) {
 				this.tel = event.target.value;
 				this.check();
 			},
+			//设置密码
 			setPassword: function(event) {
 				this.password = event.target.value;
 				this.check();
 			},
+			//检查输入是否为空并设置按钮颜色
 			check() {
 				if (this.tel != '' && this.password != '') {
 					this.bntColor = '#208bfb';

@@ -12,14 +12,16 @@
 					<text class="font_2 text_4" v-if="data.state == '未审批'">未审批</text>
 					<text class="font_2 text_4" v-else>已审批</text>
 				</view>
+
 				<view class="flex-col section_5">
 					<view class="flex-row" v-for="(item,i) in processFormList" :key="i">
-						<view class="font_5">{{item.__config__.label}}</view>
-						<view class="font_4">{{item.__config__.defaultValue}}</view>
+						<text class="font_5">{{item.label}}</text>
+						<text class="font_6">{{item.defaultValue}}</text>
 					</view>
 				</view>
+
 				<view class="flex-row justify-between section_7">
-					<text class="font_5">反馈</text>
+					<text class="font_5">审批意见</text>
 					<view class="flex-col items-start text-wrapper">
 						<uni-easyinput maxlength="-1" type="textarea" v-model="value" :clearable="false"
 							:inputBorder="false"></uni-easyinput>
@@ -57,9 +59,12 @@
 		data() {
 			return {
 				data: {},
-				examineDetail: [{
-					assigneeName: ''
-				}],
+				// examineDetail: [{
+				// 	assigneeName: ''
+				// }],
+				/**
+				 * 审批意见
+				 */
 				value: '',
 				//表单表头和内容
 				processFormList: []
@@ -80,6 +85,18 @@
 					taskId: this.data.taskId
 				}).then((res) => {
 					console.log(res);
+
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 5000,
+
+						complete: () => {
+							uni.redirectTo({
+								url: '/page_examine/my-examine/my-examine'
+							});
+						}
+					})
 				})
 			},
 			rejectExamine() {
@@ -89,27 +106,42 @@
 					taskId: this.data.taskId
 				}).then((res) => {
 					console.log(res);
+
+					uni.showToast({
+						title: res.msg,
+						icon: 'none',
+						duration: 5000,
+
+						complete: () => {
+							uni.redirectTo({
+								url: '/page_examine/my-examine/my-examine'
+							});
+						}
+					})
 				})
 			}
 		},
 		onLoad(option) {
+			let that = this
 			this.data = option
+
 			getExamineDetail({
 				procInsId: option.procInsId,
 				deployId: option.deployId,
 				taskId: option.taskId
 			}).then((res) => {
-				console.log(res);
-				this.examineDetail = res.data.historyTaskList
+				// this.examineDetail = res.data.historyTaskList
 
-				// let arr1 = []
-				this.processFormList = res.data.processFormList[0].fields
-				// arr.forEach(function(item, index, array) {
-				// 	let obj = {}
-				// 	obj[item.__config__.label] = item.__config__.defaultValue
-				// 	arr1.push(obj)
-				// });
-				// this.processFormList = arr1
+				/**
+				 * 提取表单和内容信息
+				 */
+				let arr = res.data.processFormList
+				arr.forEach(function(item, index, array) {
+					let obj = {}
+					obj["defaultValue"] = item.fields[0].__config__.defaultValue;
+					obj["label"] = item.fields[0].__config__.label;
+					that.processFormList.push(obj);
+				})
 			})
 		}
 	}
@@ -133,11 +165,11 @@
 		overflow-y: auto;
 	}
 
-	.space-y-69>view:not(:first-child),
+	/* 	.space-y-69>view:not(:first-child),
 	.space-y-69>text:not(:first-child),
 	.space-y-69>image:not(:first-child) {
 		margin-top: 69rpx;
-	}
+	} */
 
 	.section_4 {
 		padding: 40rpx 36rpx 44rpx;
@@ -193,14 +225,13 @@
 
 	.section_5 {
 		margin-top: 18rpx;
-		padding: 36rpx 39rpx 57rpx;
+		padding: 36rpx 39rpx 36rpx;
 		background-color: #ffffff;
 		overflow: hidden;
 	}
 
 	.font_5 {
 		font-family: SourceHanSansCN;
-		line-height: 29.5rpx;
 		color: #808080;
 	}
 
@@ -245,15 +276,13 @@
 		margin-left: 58rpx;
 	}
 
-	.text_8 {
-		line-height: 29rpx;
-	}
-
 	.font_6 {
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
-		line-height: 25rpx;
 		color: #000000;
+		margin-left: 26rpx;
+		width: 525rpx;
+		word-break: break-all;
 	}
 
 	.text_9 {
@@ -324,6 +353,9 @@
 		padding: 24rpx 52rpx;
 		background-color: #ffffff;
 		overflow: hidden;
+		position: absolute;
+		bottom: 0px;
+		width: 100%;
 	}
 
 	.text-wrapper_3 {

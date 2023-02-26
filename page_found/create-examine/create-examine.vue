@@ -13,8 +13,8 @@
 					<uni-file-picker v-if="item.name== 'file'" v-model="imageValue" fileMediatype="image"
 						@select="mentouSelect" :auto-upload="false" @delete="mentouDelete" />
 
-					<view v-else class="flex-col items-start text-wrapper">
-						<input type="text" @input="inputData($event,item.__vModel__)" />
+					<view v-else class="flex-col text-wrapper">
+						<input type="text" @input="inputData($event,item.__vModel__)" maxlength="-1" />
 					</view>
 
 				</view>
@@ -267,7 +267,10 @@
 		background-color: #e5e5e566;
 		border-radius: 10rpx;
 		overflow: hidden;
-		padding: 11rpx 0 11rpx 20rpx;
+		/* padding: 11rpx 0 11rpx 20rpx; */
+		padding-left: 14rpx;
+		padding-top: 8rpx;
+		padding-right: 14rpx;
 	}
 
 	.text_4 {

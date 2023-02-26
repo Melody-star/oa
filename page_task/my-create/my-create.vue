@@ -287,6 +287,10 @@
 			font-family: SourceHanSansCN;
 			color: #000000;
 			padding-left: 9rpx;
+			overflow: hidden;
+			white-space: nowrap;
+			text-overflow: ellipsis;
+			width: 501rpx;
 		}
 
 		.item-under-status {

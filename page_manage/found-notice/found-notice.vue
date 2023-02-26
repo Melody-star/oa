@@ -28,6 +28,11 @@
 		foundNotice
 	} from '@/api/api.js'
 
+	import {
+		Skip
+	} from '../../utils/utils.js'
+
+
 	export default {
 		data() {
 			return {
@@ -45,11 +50,7 @@
 					noticeContent: this.contentValue,
 					noticeType: 2
 				}).then((res) => {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none'
-					})
-					this.contentValue = ''
+					Skip(res, '/pages/index/index')
 				})
 			}
 		}

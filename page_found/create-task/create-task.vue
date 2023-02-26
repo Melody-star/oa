@@ -53,7 +53,7 @@
 				<view class="flex-col space-y-23 section_6">
 					<text class="font_1 text_13">执行人</text>
 					<view class="flex-col group_4">
-						<image src="http://img.zlpo.xyz/line.png" mode="" class="line-img"></image>
+						<image src="/static/line.png" mode="" class="line-img"></image>
 						<view class="flex-row justify-between">
 							<view class="flex-col group_5">
 								<view class="flex-row space-x-30">
@@ -349,14 +349,16 @@
 						}).then((res) => {
 							uni.showToast({
 								title: res.msg,
-								icon: 'none'
+								icon: 'none',
+								duration: 2000,
+								complete: () => {
+									if (res.code == 200) {
+										uni.switchTab({
+											url: '/page_task/my-create/my-create'
+										})
+									}
+								}
 							});
-
-							if (res.code == 200) {
-								uni.switchTab({
-									url: '/pages/index/index'
-								})
-							}
 						})
 					}
 				})

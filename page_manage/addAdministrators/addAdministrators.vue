@@ -6,7 +6,7 @@
 			<view class="list items-center" v-for="(item,i) in adminList" :key="i">
 				<img :src="item.avatar" alt="" class="list-img">
 				<text class="list-name">{{item.userName}}</text>
-				<image class="list-cancel" src="http://img.zlpo.xyz/quxiao.png" @click="cancel"></image>
+				<image src="/static/youxian.png" class="list-cancel" @click="cancel"></image>
 			</view>
 
 			<view class="foot">

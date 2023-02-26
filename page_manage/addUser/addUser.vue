@@ -46,6 +46,10 @@
 		addUser
 	} from '@/api/api.js'
 
+	import {
+		Skip
+	} from '../../utils/utils.js'
+
 	export default {
 		data() {
 			return {
@@ -67,16 +71,7 @@
 						bankCardNumber: this.card,
 						deptId: this.departmentId
 					}).then((res) => {
-						uni.showToast({
-							title: res.msg,
-							icon: 'none'
-						});
-
-						if (res.msg == "操作成功") {
-							uni.switchTab({
-								url: '/pages/index/index'
-							})
-						}
+						Skip(res, '/pages/index/index')
 					})
 				} else {
 					uni.showToast({
@@ -86,9 +81,9 @@
 				}
 			},
 			cancel() {
-				uni.redirectTo({
-					url: '/page_manage/index/index'
-				})
+				uni.navigateBack({
+					delta: 1
+				});
 			}
 		}
 	}

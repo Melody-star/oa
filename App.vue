@@ -6,7 +6,7 @@
 			});
 			uni.loadFontFace({
 				family: 'PingFang',
-				source: 'url("http://img.zlpo.xyz/PingFang.ttf")',
+				source: 'url("http://39.108.84.90:8888/down/ZqvFC9TfclpD")',
 				success() {
 					uni.hideLoading();
 				},
