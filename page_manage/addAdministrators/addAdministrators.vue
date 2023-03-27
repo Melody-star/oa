@@ -39,12 +39,8 @@
 				this.isShow = false;
 			},
 			getAllUserId(e) {
-				console.log(+e);
-
 				let temp = +e
-
 				changeUser({
-					// userId: temp,
 					admin: true
 				}).then((res) => {
 					console.log(res);

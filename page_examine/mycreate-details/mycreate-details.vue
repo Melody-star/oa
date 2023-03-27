@@ -11,16 +11,23 @@
 				<text class="font_4 text_6" v-if="data.finishTime == 'null'">待审批</text>
 				<text class="font_4 text_6" v-else>已完成</text>
 			</view>
-			<view class="flex-row justify-between section_6" v-for="(item,i) in processFormList" :key="i">
-				<text class="font_5">{{item.label}}</text>
-				<text class="font_6 text_8">{{item.defaultValue}}</text>
-			</view>
+
+			<!-- 			<view class="flex-col justify-between section_6">
+				<view class="" v-for="(item,i) in processFormList" :key="i">
+					<text class="font_5">{{item.label}}</text>
+					<text class="font_6 text_8">{{item.defaultValue}}</text>
+				</view>
+			</view> -->
+			<form-data :processFormList="processFormList"></form-data>
+			<detail-file v-if="processFileFormList.length != 0" :processFileFormList="processFileFormList">
+			</detail-file>
+
 			<view class="flex-col section_7 space-y-26">
 				<view class="flex-row group_7 space-x-90">
 					<text class="font_5 text_13">开始时间</text>
 					<text class="font_6 text_14">{{data.createTime}}</text>
 				</view>
-				<view class="flex-row group_7 space-x-90" v-if="data.finishTime != null">
+				<view class="flex-row group_7 space-x-90" v-if="data.finishTime != 'null'">
 					<text class="font_5 text_13">结束时间</text>
 					<text class="font_6 text_14">{{data.finishTime}}</text>
 				</view>
@@ -53,39 +60,36 @@
 				data: {},
 				node: [],
 				processFormList: [],
+				processFileFormList: [],
 				active: 0
 			}
 		},
 		methods: {
-			recallExamine() {
-				deleteExamine({
-					procInsId: data.procInsId
-				}).then((res) => {
-					console.log(res);
-				})
-			},
-			deleteExamine() {
-
-			}
+			// recallExamine() {
+			// 	deleteExamine({
+			// 		procInsId: data.procInsId
+			// 	}).then((res) => {
+			// 		console.log(res);
+			// 	})
+			// },
+			// deleteExamine() {
+			// }
 		},
 		onLoad(option) {
 			let that = this
-
 			this.data = option
 			getExamineDetail({
 				procInsId: option.procInsId,
 				deployId: option.deployId,
 				taskId: option.taskId
 			}).then((res) => {
-				/**
-				 * 提取流程信息
-				 */
+
+				// 提取流程信息
 				res.data.historyTaskList.forEach(function(item, index, array) {
 					let obj = {}
 					obj["title"] = item.assigneeName;
 					obj["desc"] = item.createTime;
 					that.node.push(obj);
-
 					if (item.finishTime === null) {
 						that.active = index - 1;
 					} else {
@@ -93,15 +97,26 @@
 					}
 				})
 
-				/**
-				 * 提取表单和内容信息
-				 */
-				let arr = res.data.processFormList
+				// 提取表单和内容信息
+				let arr = res.data.processFormList[0].fields
 				arr.forEach(function(item, index, array) {
 					let obj = {}
-					obj["defaultValue"] = item.fields[0].__config__.defaultValue;
-					obj["label"] = item.fields[0].__config__.label;
-					that.processFormList.push(obj);
+
+					// 获取文件组件的url
+					if (item.__config__.tag == 'el-upload') {
+						let arr1 = []
+						item.__config__.defaultValue.forEach(function(item, index, array) {
+							arr1.push(item.url)
+						})
+						that.processFileFormList = arr1
+					}
+
+					// 获取非文件组件的值和名称
+					else {
+						obj["defaultValue"] = item.__config__.defaultValue;
+						obj["label"] = item.__config__.label;
+						that.processFormList.push(obj);
+					}
 				})
 			})
 		}
@@ -199,9 +214,13 @@
 
 	.section_6 {
 		margin-top: 18rpx;
-		padding: 36rpx 39rpx 36rpx;
+		padding: 36rpx 39rpx 39rpx;
 		background-color: #ffffff;
 		overflow: hidden;
+	}
+
+	.section_6>view {
+		margin-top: 10rpx;
 	}
 
 	.font_5 {
@@ -256,7 +275,7 @@
 	.space-x-90>view:not(:first-child),
 	.space-x-90>text:not(:first-child),
 	.space-x-90>image:not(:first-child) {
-		margin-left: 26rpx;
+		margin-left: 36rpx;
 	}
 
 	.text_13 {

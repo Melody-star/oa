@@ -117,6 +117,10 @@
 	} from "@/api/api.js"
 
 	import {
+		skipAppointPage
+	} from '../../utils/utils.js'
+
+	import {
 		useCounterStore
 	} from '@/stores/counter';
 	const counter = useCounterStore();
@@ -237,13 +241,15 @@
 				}).then((res) => {
 					uni.showToast({
 						title: res.msg,
-						icon: 'none'
-					});
-
-					if (res.code === 200) {
-						//获取access_token
-						this.getAccess()
-					}
+						icon: 'none',
+						duration: 2000,
+						mask: true,
+						success: function() {
+							if (res.code == 200) {
+								that.getAccess()
+							}
+						}
+					})
 				})
 			},
 			getAccess() {
@@ -294,9 +300,6 @@
 										}
 									}
 								},
-								success: (res) => {
-									console.log(res);
-								}
 							});
 						}
 
@@ -307,7 +310,7 @@
 							fail(res) {}
 						})
 
-						uni.reLaunch({
+						uni.redirectTo({
 							url: '/page_task/my-create/my-create'
 						});
 					} else {
@@ -347,25 +350,13 @@
 							taskUrgentDegree: that.grade,
 							copyUserOpenId: openid,
 						}).then((res) => {
-							uni.showToast({
-								title: res.msg,
-								icon: 'none',
-								duration: 2000,
-								complete: () => {
-									if (res.code == 200) {
-										uni.switchTab({
-											url: '/page_task/my-create/my-create'
-										})
-									}
-								}
-							});
+							skipAppointPage(res, '/page_task/my-create/my-create')
 						})
 					}
 				})
 			},
 			getAllUserId(e) {
 				this.allSelectUserId = e.join();
-				console.log(this.allSelectUserId);
 				this.impleNum = e.length
 				this.showIndexedlist = false
 				this.showBox = true

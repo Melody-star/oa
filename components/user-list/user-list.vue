@@ -37,7 +37,6 @@
 
 				let that = this
 				this.selectList.forEach(function(item, index, array) {
-					console.log(item);
 					arr.push(that.user[item.itemIndex].userId)
 					arr1.push(that.user[item.itemIndex].userName)
 					arr2.push(that.user[item.itemIndex].openId)

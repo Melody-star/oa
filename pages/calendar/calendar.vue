@@ -2,7 +2,7 @@
 	<view style="background-color: #F5F5F5;">
 		<uni-calendar :selected="info.selected" :showMonth="false" @change="change"></uni-calendar>
 
-		<view v-if="todayTask.length != 0 || todayExamine.length != 0">
+		<view v-if="todayTask.length != 0 || todayExamine.length != 0" style="padding-bottom: 1rpx;">
 			<view class="flex-row section_10 space-x-9" v-for="(item,i) in todayTask" :key="i"
 				@click="gotoDetail(item)">
 				<view class="section_11_jinji" v-if="item.taskUrgentDegree === 1"></view>
@@ -138,14 +138,15 @@
 					});
 
 					that.todayTask = arr1
-
-					console.log(that.info.selected);
 				})
 
 				getMyExamineListt({
 					pageNum: 1,
 					pageSize: 1000
 				}).then((res) => {
+
+					console.log(res);
+
 					let arr = []
 					let arr2 = []
 
@@ -168,7 +169,7 @@
 				})
 			}
 		},
-		onLoad() {
+		onShow() {
 			//获取今日日期
 			let time = new Date()
 			//格式化当前日期

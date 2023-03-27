@@ -1,19 +1,7 @@
 <script>
 	export default {
 		onLaunch: function() {
-			uni.showLoading({
-				title: '加载中'
-			});
-			uni.loadFontFace({
-				family: 'PingFang',
-				source: 'url("http://39.108.84.90:8888/down/ZqvFC9TfclpD")',
-				success() {
-					uni.hideLoading();
-				},
-				fail() {
-					uni.hideLoading();
-				}
-			})
+
 		},
 		onShow: function() {
 			// console.log('App Show')
@@ -25,7 +13,7 @@
 </script>
 
 <style lang="scss">
-	/*每个页面公共css */
+	// 每个页面公共css
 	@import '@/uni_modules/uni-scss/index.scss';
 	/* #ifndef APP-NVUE */
 

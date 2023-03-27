@@ -199,22 +199,32 @@
 			dialogInputConfirm2(val) {
 				this.newPhone = val
 				this.$refs.inputDialog2.close()
-				changeUserInfo({
-					phonenumber: this.newPhone,
-					userId: counter.userId
-				}).then((res) => {
-					if (res.code == 200) {
-						uni.showToast({
-							icon: 'success',
-							title: '修改成功'
-						})
-					} else {
-						uni.showToast({
-							icon: 'error',
-							title: '修改失败'
-						})
-					}
-				})
+
+				if (this.newPhone.length == 11) {
+					changeUserInfo({
+						phonenumber: this.newPhone,
+						userId: counter.userId
+					}).then((res) => {
+						if (res.code == 200) {
+							uni.showToast({
+								icon: 'success',
+								title: '修改成功'
+							})
+						} else {
+							uni.showToast({
+								icon: 'error',
+								title: '修改失败'
+							})
+						}
+					})
+				} else {
+					uni.showToast({
+						title: "请输入正确的11位手机号",
+						duration: 2000,
+						icon: 'none'
+					})
+				}
+
 			},
 		}
 	}

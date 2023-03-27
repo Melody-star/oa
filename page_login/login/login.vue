@@ -1,15 +1,27 @@
 <template>
 	<view class="flex-col page">
-		<text class="text">欢迎来到OA系统</text>
+		<text class="text">欢迎来到文芯OA系统</text>
+
 		<view class="flex-col items-start space-y-44 group">
-			<text class="font_1">手机号</text>
-			<input maxlength=11 class="text_2" placeholder="请输入您的手机号" @input="setTel" />
+			<text class="font_1">用户名</text>
+			<input maxlength=11 class="text_2" placeholder="请输入您的用户名" @input="setTel" />
 		</view>
+
 		<view class="flex-col space-y-57 group_2">
 			<text class="font_1 text_3">密码</text>
 			<input :password="true" maxlength=20 class="text_2" placeholder="请输入密码" @input="setPassword"
 				placeholder-style="font-size: 28rpx;" />
 		</view>
+
+		<view class="conceal">
+			<radio-group @change="radioChange">
+				<label>
+					<radio value="isSelect" color="#208bfb" style="transform:scale(0.7)" />
+				</label>
+			</radio-group>
+			<view>我已阅读并同意<text @click="openContract()">《用户协议及隐私政策》</text></view>
+		</view>
+
 		<button class="flex-col items-center button font_1" :style="{background: bntColor}" @click="Login()">登录</button>
 		<text class="text_6">江西文芯信息技术有限公司</text>
 	</view>
@@ -32,14 +44,39 @@
 				tel: '',
 				password: '',
 				bntColor: '#9AD0FB',
+				agreeConceal: false
 			}
 		},
 		methods: {
+			openContract() {
+				uni.downloadFile({
+					url: 'https://jxwx-carpark.oss-cn-shenzhen.aliyuncs.com/image/2023/03/27/0660019e37934fe98c642bdc626d0e2e.pdf',
+					success: function(res) {
+						var filePath = res.tempFilePath;
+						uni.openDocument({
+							filePath: filePath,
+							showMenu: true,
+							fail: (res) => {
+								uni.showToast({
+									title: "文档打开失败！",
+									icon: 'none'
+								})
+							}
+						});
+					}
+				});
+			},
+
+			radioChange: function(evt) {
+				this.agreeConceal = true
+			},
+
 			//设置手机号
 			setTel: function(event) {
 				this.tel = event.target.value;
 				this.check();
 			},
+
 			//设置密码
 			setPassword: function(event) {
 				this.password = event.target.value;
@@ -53,49 +90,57 @@
 					this.bntColor = '#9AD0FB'
 				}
 			},
+			/**
+			 * 登录
+			 */
 			Login() {
 				if (this.bntColor === '#208bfb') {
-					login({
-						username: this.tel,
-						password: this.password,
-						code: 0,
-						uuid: 454652
-					}).then((res) => {
-						if (res.code != 200) {
-							return uni.showToast({
-								title: res.msg,
-								icon: 'none',
-								duration: 1500,
-							})
-						} else {
-							counter.setStorageToken(res.data.token);
-							this.getCode()
-							uni.switchTab({
-								url: '/pages/index/index'
-							});
-						}
-					})
+					if (this.agreeConceal) {
+						login({
+							username: this.tel,
+							password: this.password,
+							code: 0,
+							uuid: 454652
+						}).then((res) => {
+							if (res.code != 200) {
+								return uni.showToast({
+									title: res.msg,
+									icon: 'none',
+									duration: 1500,
+								})
+							} else {
+								counter.setStorageToken(res.data.token);
+								// this.getCode()
+								uni.switchTab({
+									url: '/pages/index/index'
+								});
+							}
+						})
+					} else {
+						uni.showToast({
+							title: "请阅读并同意《用户协议及隐私政策》",
+							icon: 'none'
+						})
+					}
 				}
 			},
-			getCode() {
-				//获取登录凭证（code）
-				wx.login({
-					success(res) {
-						console.log(res.code);
-						if (res.code) {
-							getOpenid(res.code).then((res) => {
-								console.log("openid:" + res);
-								// console.log(res);
-							})
-						} else {
-							uni.showToast({
-								title: res.errMsg,
-								icon: 'error'
-							})
-						}
-					}
-				})
-			}
+			// getCode() {
+			// 	//获取登录凭证（code）
+			// 	wx.login({
+			// 		success(res) {
+			// 			if (res.code) {
+			// 				getOpenid(res.code).then((res) => {
+
+			// 				})
+			// 			} else {
+			// 				uni.showToast({
+			// 					title: res.errMsg,
+			// 					icon: 'error'
+			// 				})
+			// 			}
+			// 		}
+			// 	})
+			// }
 		}
 	}
 </script>
@@ -181,7 +226,7 @@
 		}
 
 		.button {
-			margin-top: 300rpx;
+			margin-top: 21px;
 			padding: 30rpx 0 30rpx;
 			background-color: #208bfb;
 			border-radius: 10rpx;
@@ -197,6 +242,20 @@
 			line-height: 22.5rpx;
 			position: absolute;
 			bottom: 54rpx;
+		}
+	}
+
+	.conceal {
+		margin-top: 90px;
+		display: flex;
+		align-items: center;
+
+		view {
+			font-size: 24rpx;
+		}
+
+		text {
+			color: #208bfb;
 		}
 	}
 </style>

@@ -47,7 +47,7 @@
 	} from '@/api/api.js'
 
 	import {
-		Skip
+		skipAppointPage
 	} from '../../utils/utils.js'
 
 	export default {
@@ -71,7 +71,7 @@
 						bankCardNumber: this.card,
 						deptId: this.departmentId
 					}).then((res) => {
-						Skip(res, '/pages/index/index')
+						skipAppointPage(res, '/pages/index/index')
 					})
 				} else {
 					uni.showToast({

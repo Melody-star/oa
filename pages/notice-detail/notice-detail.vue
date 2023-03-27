@@ -1,8 +1,11 @@
 <template>
 	<view class="flex-col space-y-29 page">
 		<text class="text">{{noticeDetail.noticeTitle}}</text>
-		<text class="text_2">{{noticeDetail.createTime}}</text>
-		<text class="text_3">{{noticeDetail.noticeContent}}</text>
+		<view class="text_2">
+			<text>{{noticeDetail.createTime}}</text>
+			<text class="text_2_createBy">{{noticeDetail.createBy}}</text>
+		</view>
+		<rich-text :nodes="noticeDetail.noticeContent"></rich-text>
 	</view>
 </template>
 
@@ -20,7 +23,6 @@
 		onLoad(options) {
 			const data = options.noticeId
 			getNoticeDetail(data).then((res) => {
-				console.log(res);
 				this.noticeDetail = res.data
 			})
 		},
@@ -30,7 +32,7 @@
 	}
 </script>
 
-<style>
+<style lang="less">
 	.page {
 		padding: 36rpx 39rpx 956rpx;
 		background-color: #ffffff;
@@ -43,7 +45,8 @@
 	.space-y-29>view:not(:first-child),
 	.space-y-29>text:not(:first-child),
 	.space-y-29>image:not(:first-child) {
-		margin-top: 29rpx;
+		margin-top: 14rpx;
+		margin-bottom: 14rpx;
 	}
 
 	.text {
@@ -58,9 +61,10 @@
 		align-self: flex-start;
 		color: #a6a6a6;
 		font-size: 28rpx;
-		font-family: PingFang;
-		font-weight: 800;
-		line-height: 21rpx;
+
+		&_createBy {
+			margin-left: 22rpx;
+		}
 	}
 
 	.text_3 {

@@ -61,8 +61,10 @@
 	export default {
 		data() {
 			return {
-				myCreateTaskList: [], //所有
-				temp: [], //搜索后的列表
+				myCreateTaskList: [],
+
+				// 搜索后的内容
+				temp: [],
 			}
 		},
 		methods: {

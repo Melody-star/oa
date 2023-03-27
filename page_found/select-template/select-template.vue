@@ -45,7 +45,6 @@
 				pageNum: 1,
 				pageSize: 1000
 			}).then((res) => {
-				console.log(res.rows);
 				this.tempList = res.rows
 			})
 		}

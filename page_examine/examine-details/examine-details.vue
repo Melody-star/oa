@@ -13,12 +13,15 @@
 					<text class="font_2 text_4" v-else>已审批</text>
 				</view>
 
-				<view class="flex-col section_5">
+				<!-- 				<view class="flex-col section_5">
 					<view class="flex-row" v-for="(item,i) in processFormList" :key="i">
 						<text class="font_5">{{item.label}}</text>
 						<text class="font_6">{{item.defaultValue}}</text>
 					</view>
-				</view>
+				</view> -->
+				<form-data :processFormList="processFormList"></form-data>
+				<detail-file v-if="processFileFormList.length != 0" :processFileFormList="processFileFormList">
+				</detail-file>
 
 				<view class="flex-row justify-between section_7">
 					<text class="font_5">审批意见</text>
@@ -49,6 +52,10 @@
 	const counter = useCounterStore();
 
 	import {
+		skipBacktPage
+	} from '../../utils/utils.js'
+
+	import {
 		getExamineDetail,
 		deleteExamine,
 		agreeExamine,
@@ -67,36 +74,25 @@
 				 */
 				value: '',
 				//表单表头和内容
-				processFormList: []
+				processFormList: [],
+				processFileFormList: []
 			}
 		},
 		methods: {
-			deleteExamine() {
-				deleteExamine({
+			// deleteExamine() {
+			// 	deleteExamine({
 
-				}).then((res) => {
-					console.log(res);
-				})
-			},
+			// 	}).then((res) => {
+			// 		console.log(res);
+			// 	})
+			// },
 			agreeExamine() {
 				agreeExamine({
 					assignee: counter.userName,
 					comment: this.value,
 					taskId: this.data.taskId
 				}).then((res) => {
-					console.log(res);
-
-					uni.showToast({
-						title: res.msg,
-						icon: 'none',
-						duration: 5000,
-
-						complete: () => {
-							uni.redirectTo({
-								url: '/page_examine/my-examine/my-examine'
-							});
-						}
-					})
+					skipBacktPage(res, '/page_examine/my-examine/my-examine')
 				})
 			},
 			rejectExamine() {
@@ -105,19 +101,7 @@
 					comment: this.value,
 					taskId: this.data.taskId
 				}).then((res) => {
-					console.log(res);
-
-					uni.showToast({
-						title: res.msg,
-						icon: 'none',
-						duration: 5000,
-
-						complete: () => {
-							uni.redirectTo({
-								url: '/page_examine/my-examine/my-examine'
-							});
-						}
-					})
+					skipBacktPage(res, '/page_examine/my-examine/my-examine')
 				})
 			}
 		},
@@ -130,17 +114,28 @@
 				deployId: option.deployId,
 				taskId: option.taskId
 			}).then((res) => {
-				// this.examineDetail = res.data.historyTaskList
 
-				/**
-				 * 提取表单和内容信息
-				 */
-				let arr = res.data.processFormList
+				// 提取表单和内容信息
+				let arr = res.data.processFormList[0].fields
 				arr.forEach(function(item, index, array) {
 					let obj = {}
-					obj["defaultValue"] = item.fields[0].__config__.defaultValue;
-					obj["label"] = item.fields[0].__config__.label;
-					that.processFormList.push(obj);
+
+					// 获取文件组件的url
+					if (item.__config__.tag == 'el-upload') {
+						let arr1 = []
+						item.__config__.defaultValue.forEach(function(item, index, array) {
+
+							arr1.push(item.url)
+						})
+						that.processFileFormList = arr1
+					}
+
+					// 获取非文件组件的值和名称
+					else {
+						obj["defaultValue"] = item.__config__.defaultValue;
+						obj["label"] = item.__config__.label;
+						that.processFormList.push(obj);
+					}
 				})
 			})
 		}
@@ -280,7 +275,7 @@
 		font-size: 32rpx;
 		font-family: SourceHanSansCN;
 		color: #000000;
-		margin-left: 26rpx;
+		/* margin-left: 26rpx; */
 		width: 525rpx;
 		word-break: break-all;
 	}
@@ -385,5 +380,9 @@
 		font-size: 28rpx;
 		font-family: SourceHanSansCN;
 		line-height: 25rpx;
+	}
+
+	.section_6>view {
+		margin-top: 10px;
 	}
 </style>

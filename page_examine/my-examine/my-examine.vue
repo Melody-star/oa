@@ -66,7 +66,6 @@
 				}
 			},
 			gotoDetail(item) {
-				console.log("item.deployId:" + item.deployId);
 				uni.navigateTo({
 					url: '/page_examine/examine-details/examine-details?taskId=' + item.taskId + '&procInsId=' +
 						item.procInsId + '&deployId=' + item.deployId + '&title=' + item.procDefName +

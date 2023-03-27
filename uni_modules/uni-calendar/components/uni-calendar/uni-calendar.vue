@@ -1,7 +1,9 @@
 <template>
 	<view class="uni-calendar">
-		<view v-if="!insert&&show" class="uni-calendar__mask" :class="{'uni-calendar--mask-show':aniMaskShow}" @click="clean"></view>
-		<view v-if="insert || show" class="uni-calendar__content" :class="{'uni-calendar--fixed':!insert,'uni-calendar--ani-show':aniMaskShow}">
+		<view v-if="!insert&&show" class="uni-calendar__mask" :class="{'uni-calendar--mask-show':aniMaskShow}"
+			@click="clean"></view>
+		<view v-if="insert || show" class="uni-calendar__content"
+			:class="{'uni-calendar--fixed':!insert,'uni-calendar--ani-show':aniMaskShow}">
 			<view v-if="!insert" class="uni-calendar__header uni-calendar--fixed-top">
 				<view class="uni-calendar__header-btn-box" @click="close">
 					<text class="uni-calendar__header-text uni-calendar--fixed-width">{{cancelText}}</text>
@@ -52,7 +54,8 @@
 				</view>
 				<view class="uni-calendar__weeks" v-for="(item,weekIndex) in weeks" :key="weekIndex">
 					<view class="uni-calendar__weeks-item" v-for="(weeks,weeksIndex) in item" :key="weeksIndex">
-						<calendar-item class="uni-calendar-item--hook" :weeks="weeks" :calendar="calendar" :selected="selected" :lunar="lunar" @change="choiceDate"></calendar-item>
+						<calendar-item class="uni-calendar-item--hook" :weeks="weeks" :calendar="calendar"
+							:selected="selected" :lunar="lunar" @change="choiceDate"></calendar-item>
 					</view>
 				</view>
 			</view>
@@ -64,10 +67,12 @@
 	import Calendar from './util.js';
 	import calendarItem from './uni-calendar-item.vue'
 	import {
-	initVueI18n
+		initVueI18n
 	} from '@dcloudio/uni-i18n'
 	import messages from './i18n/index.js'
-	const {	t	} = initVueI18n(messages)
+	const {
+		t
+	} = initVueI18n(messages)
 	/**
 	 * Calendar 日历
 	 * @description 日历组件可以查看日期，选择任意范围内的日期，打点操作。常用场景如：酒店日期预订、火车机票选择购买日期、上下班打卡等
@@ -92,7 +97,7 @@
 		components: {
 			calendarItem
 		},
-		emits:['close','confirm','change','monthSwitch'],
+		emits: ['close', 'confirm', 'change', 'monthSwitch'],
 		props: {
 			date: {
 				type: String,
@@ -142,7 +147,7 @@
 				aniMaskShow: false
 			}
 		},
-		computed:{
+		computed: {
 			/**
 			 * for i18n
 			 */
@@ -183,12 +188,12 @@
 				// this.cale.setDate(newVal)
 				this.init(newVal)
 			},
-			startDate(val){
+			startDate(val) {
 				this.cale.resetSatrtDate(val)
 				this.cale.setDate(this.nowDate.fullDate)
 				this.weeks = this.cale.weeks
 			},
-			endDate(val){
+			endDate(val) {
 				this.cale.resetEndDate(val)
 				this.cale.setDate(this.nowDate.fullDate)
 				this.weeks = this.cale.weeks
@@ -217,7 +222,6 @@
 			clean() {},
 			bindDateChange(e) {
 				const value = e.detail.value + '-1'
-				console.log(this.cale.getDate(value));
 				this.setDate(value)
 			},
 			/**
@@ -364,11 +368,12 @@
 	$uni-bg-color-mask: rgba($color: #000000, $alpha: 0.4);
 	$uni-border-color: #EDEDED;
 	$uni-text-color: #333;
-	$uni-bg-color-hover:#f1f1f1;
-	$uni-font-size-base:14px;
+	$uni-bg-color-hover: #f1f1f1;
+	$uni-font-size-base: 14px;
 	$uni-text-color-placeholder: #808080;
 	$uni-color-subtitle: #555555;
-	$uni-text-color-grey:#999;
+	$uni-text-color-grey: #999;
+
 	.uni-calendar {
 		/* #ifndef APP-NVUE */
 		display: flex;

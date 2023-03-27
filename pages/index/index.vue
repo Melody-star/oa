@@ -1,7 +1,7 @@
 <template>
 	<view class="flex-col page">
 		<view class="flex-col space-y-79 section">
-			<text class="text">Hellow，{{piniaInf.nickName}}</text>
+			<text class="text">Hello，{{piniaInf.nickName}}</text>
 			<view class="flex-row">
 				<view class="flex-col items-center space-y-26 equal-division-item group">
 					<text class="font_1">{{myTaskList.length}}</text>
@@ -70,7 +70,7 @@
 					</view>
 
 					<view v-else>
-						<image class="icon-nothing" src="/static/编组-10.png" mode="widthFix">
+						<image class="icon-nothing" src="/static/icon-nothing.png" mode="widthFix">
 						</image>
 						<view class="text-nothing">暂无公告</view>
 					</view>
@@ -98,25 +98,27 @@
 	export default {
 		data() {
 			return {
-				//公告列表
+				// 公告列表
 				noticeList: [],
-				//vuex
+				// vuex
 				piniaInf: counter,
-				//我的任务列表
+				// 我的任务列表
 				myTaskList: [],
-				//我审批的数量
+				// 我审批的数量
 				myExamineNum: 0,
-				//抄送我的列表
+				// 抄送我的列表
 				myCopy: [],
-				//超时预警列表
+				// 超时预警列表
 				warningList: []
 			};
 		},
 		onShow() {
 			let that = this
+
 			//获取本地的token值
 			uni.getStorage({
 				key: "token",
+
 				//没有获取到就重新登录
 				fail: function(res) {
 					uni.redirectTo({
@@ -124,8 +126,10 @@
 					});
 				},
 				success: function(res) {
+
 					//保存到vuex中
 					counter.token = res.data
+
 					//获取用户信息
 					getUserInfo(true).then((res) => {
 						if (res.code == 401) {
@@ -174,17 +178,30 @@
 											pageNum: 1,
 											pageSize: 1000
 										}).then((res) => {
-											that.myTaskList = res.rows
-												.filter(item => item
-													.taskDegreeOfCompletion ==
-													0)
+											if (res.code != 200) {
+												uni.showToast({
+													icon: 'none',
+													title: res
+														.msg
+												})
+											} else {
+												that.myTaskList = res
+													.rows
+													.filter(item =>
+														item
+														.taskDegreeOfCompletion ==
+														0)
 
-											//筛选即将超时的任务
-											that.earlyWarning()
-											//获取公告列表
-											that.updataNotice();
-											//订阅消息
-											that.subscribeMsg();
+												//筛选即将超时的任务
+												that.earlyWarning()
+
+												//获取公告列表
+												that.updataNotice();
+
+												//订阅消息
+												that.subscribeMsg();
+											}
+
 										})
 									})
 								})
@@ -236,6 +253,7 @@
 
 				this.warningList = arr
 			},
+
 			//订阅消息
 			subscribeMsg() {
 				uni.requestSubscribeMessage({
@@ -419,8 +437,8 @@
 	}
 
 	.list-item {
-		padding: 26rpx 18rpx 28rpx 23rpx;
-		margin-bottom: 24rpx;
+		padding: 26rpx 18rpx 26rpx 23rpx;
+		margin-bottom: 18rpx;
 		background-color: #e5e5e580;
 		border-radius: 8rpx;
 	}

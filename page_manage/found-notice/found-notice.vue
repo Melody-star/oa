@@ -29,7 +29,7 @@
 	} from '@/api/api.js'
 
 	import {
-		Skip
+		skipAppointPage
 	} from '../../utils/utils.js'
 
 
@@ -50,7 +50,7 @@
 					noticeContent: this.contentValue,
 					noticeType: 2
 				}).then((res) => {
-					Skip(res, '/pages/index/index')
+					skipAppointPage(res, '/pages/index/index')
 				})
 			}
 		}

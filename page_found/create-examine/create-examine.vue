@@ -4,19 +4,14 @@
 			<view class="flex-col section_4">
 				<view style="margin-bottom: 20rpx;" v-for="(item,i) in ProcessForm" :key="i">
 					<text class="font_1 text_3">{{item.__config__.label}}</text>
-					<br>
-					<!-- 					<image v-if="item.__vModel__== 'file'" class="up-img" @click="chooseImg(item.__vModel__)"
-						src="https://codefun-proj-user-res-1256085488.cos.ap-guangzhou.myqcloud.com/634182aa5a7e3f03108738d8/635a5f5dfe65f70012e602cd/51ae67e043a7fbf6a79fbbccf4d45b17.png"
-						mode=""></image> -->
 
-
-					<uni-file-picker v-if="item.name== 'file'" v-model="imageValue" fileMediatype="image"
-						@select="mentouSelect" :auto-upload="false" @delete="mentouDelete" />
+					<uni-file-picker v-if="item.name== 'file'" @fail="fail" @progress="progress" @success="success"
+						@select="mentouSelect" :auto-upload="false" @delete="mentouDelete"
+						:image-styles="imageStyles"></uni-file-picker>
 
 					<view v-else class="flex-col text-wrapper">
 						<input type="text" @input="inputData($event,item.__vModel__)" maxlength="-1" />
 					</view>
-
 				</view>
 			</view>
 		</view>
@@ -34,6 +29,10 @@
 		getProcessForm,
 		startExamine
 	} from '@/api/api.js'
+
+	import {
+		skipAppointPage
+	} from '../../utils/utils.js'
 
 	import {
 		useCounterStore
@@ -61,101 +60,84 @@
 				definitionId: '',
 				file: [],
 				type: "",
-				imgList: []
+				imgList: [],
+				imageStyles: {
+					width: 83,
+					height: 83,
+				}
 			}
 		},
 		methods: {
-			changeLog(e) {
-				console.log('change事件:', e);
-			},
-			//获取输入框的值
+
+			// 获取输入框的值
 			inputData(event, dataValue) {
 				this.formData[dataValue] = event.target.value
 			},
-			//提交
-			submit() {
-				let arr = []
-				this.imgList.forEach(function(item, index, array) {
-					arr.push(item.url)
-				});
 
-				this.formData['file'] = arr
-				let temp = JSON.stringify(this.formData)
+			// 提交
+			submit() {
+				this.formData['file'] = this.imgList
+				let forData = JSON.stringify(this.formData)
+
+				console.log(forData);
 
 				startExamine(
-					temp,
+					forData,
 					this.definitionId
 				).then((res) => {
-					uni.showToast({
-						title: res.msg,
-						icon: 'none',
-						success: () => {
-							if (res.code == 200) {
-								uni.redirectTo({
-									url: '/page_examine/my-create/my-create'
-								});
-							}
-						}
-					})
+					skipAppointPage(res, '/page_examine/my-create/my-create')
 				})
 			},
-			// uploadImg() {
-			// 	let imgArr = []
-			// 	for (let i = 0; i < this.file.length; i++) {
-			// 		let obj = new Object();
-			// 		obj.name = 'img' + i;
-			// 		obj.uri = this.file[i].path;
-			// 		imgArr.push(obj);
-			// 	}
-			// },
 			cancel() {
 				uni.redirectTo({
 					url: '/page_found/select-template/select-template'
 				});
 			},
 			mentouSelect(e) {
-				let that = this
-				if (e.tempFilePaths && e.tempFiles) {
-					this.file = e.tempFiles
-
-					uni.showLoading({
-						title: "上传中"
-					})
-
-					// 上传图片到相依的接口
-					uni.uploadFile({
-						url: operate.api + '/system/oss/upload', //这里为拼接的接口地址
-						filePath: this.file[0].tempFilePath ? this.file[0].tempFilePath : this.file[0].path,
-						fileType: "image",
-						header: {
-							'Authorization': 'Bearer ' + counter.token
-						},
-						name: 'file',
-						success: uploadFileRes => {
-							console.log(uploadFileRes);
-							// 这里可以对返回的参数进行处理了
-							uni.showToast({
-								title: '上传成功',
-								icon: "success"
-							});
-
-							that.imgList.push({
-								name: e.tempFiles[0].name,
-								url: JSON.parse(uploadFileRes.data).data.url
-							})
-						},
-						fail(err) {
-							console.log(err);
-							uni.showToast({
-								title: '上传失败',
-								icon: "error"
-							});
-						},
-						complete: () => {
-							uni.hideLoading()
-						}
-					})
+				uni.showLoading({
+					title: "上传中"
+				})
+				let promises = []
+				for (let i = 0; i < e.tempFilePaths.length; i++) {
+					const promise = this.uploadFileRes(e.tempFilePaths, i)
+					promises.push(promise)
 				}
+				Promise.all(promises).then(() => {
+
+				})
+			},
+			async uploadFileRes(tempFilePaths, i) {
+				let that = this
+				await uni.uploadFile({
+					url: operate.api + '/system/oss/upload',
+					filePath: tempFilePaths[i],
+					name: 'file',
+					header: {
+						'Authorization': 'Bearer ' + counter.token
+					},
+					success: (res) => {
+
+						console.log(res);
+
+						uni.showToast({
+							title: '上传成功',
+							icon: "success"
+						});
+
+						// that.imgList.push({
+						// 	name: JSON.parse(uploadFileRes.data).data.fileName,
+						// 	url: JSON.parse(uploadFileRes.data).data.url
+						// })
+						that.imgList.push(JSON.parse(res.data).data)
+					},
+					fail: (res) => {
+
+						uni.showToast({
+							title: '上传失败',
+							icon: "error"
+						});
+					}
+				})
 			},
 			mentouDelete(e) {
 				let that = this
@@ -164,6 +146,15 @@
 						that.imgList.splice(i, 1)
 					}
 				}
+			},
+			fail(e) {
+				console.log("上传失败：" + e);
+			},
+			success(e) {
+				console.log("上传成功：" + e);
+			},
+			progress(e) {
+				console.log(e);
 			}
 		},
 		onLoad(data) {
@@ -209,6 +200,17 @@
 
 	.uni-date-x {
 		background-color: #e5e5e566 !important;
+	}
+
+	.up_btn {
+		background-color: #0680f6;
+		width: 200rpx;
+		height: 60rpx;
+		color: white;
+		text-align: center;
+		border-radius: 6px;
+		font-size: 24rpx;
+		line-height: 60rpx;
 	}
 
 	page {

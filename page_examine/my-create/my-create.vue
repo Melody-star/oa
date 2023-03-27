@@ -59,7 +59,6 @@
 				pageSize: 1000
 			}).then((res) => {
 				this.examineList = res.rows
-
 				this.temp = this.examineList
 			})
 		},

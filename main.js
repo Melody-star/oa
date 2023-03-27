@@ -19,11 +19,8 @@ import {
 import App from './App.vue'
 import * as Pinia from 'pinia'
 
-// import api from '@/common/api.js'
-
 export function createApp() {
 	const app = createSSRApp(App)
-	// app.config.globalProperties.$api = api;
 	app.use(Pinia.createPinia());
 	return {
 		app,

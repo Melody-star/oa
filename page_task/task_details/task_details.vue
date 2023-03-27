@@ -136,6 +136,10 @@
 	} from '@/stores/counter';
 	const counter = useCounterStore();
 
+	import {
+		skipBacktPage
+	} from '../../utils/utils.js'
+
 	export default {
 		data() {
 			return {
@@ -159,10 +163,7 @@
 			this.temp = option.temp
 			const data = option.taskId
 			getTaskDetail(data).then((res) => {
-				console.log("任务详情");
-				console.log(res);
 				this.taskList = res.data
-
 				this.taskRecipientId = this.taskList.taskRecipientId.split(',')
 				this.receiveOpenid = this.taskList.copyUserOpenId.split(',')
 			})
@@ -248,31 +249,32 @@
 					feedbackContent: that.feedbackValue,
 					feedbackPerson: counter.userName
 				}).then((res) => {
-					if (res.code == 200) {
-						uni.showToast({
-							title: res.msg,
-							duration: 2000,
-							icon: 'success',
-							success: () => {
-								if (that.temp == 0) {
-									uni.redirectTo({
-										url: '/page_task/my-task/my-task'
-									});
-								} else {
-									uni.redirectTo({
-										url: '/page_task//my-create/my-create'
-									});
-								}
-							}
-						});
-					} else {
-						uni.showToast({
-							title: res.msg,
-							duration: 2000,
-							icon: 'error'
-						});
-					}
+					// if (res.code == 200) {
+					// 	uni.showToast({
+					// 		title: res.msg,
+					// 		duration: 2000,
+					// 		icon: 'success',
+					// 		success: () => {
+					// 			if (that.temp == 0) {
+					// 				uni.redirectTo({
+					// 					url: '/page_task/my-task/my-task'
+					// 				});
+					// 			} else {
+					// 				uni.redirectTo({
+					// 					url: '/page_task//my-create/my-create'
+					// 				});
+					// 			}
+					// 		}
+					// 	});
+					// } else {
+					// 	uni.showToast({
+					// 		title: res.msg,
+					// 		duration: 2000,
+					// 		icon: 'error'
+					// 	});
+					// }
 
+					skipBacktPage(res);
 				})
 			},
 			urge() {
